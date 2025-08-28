@@ -98,25 +98,21 @@ def update_user_telegram(username, telegram):
 
 @app.route("/")
 def index():
-    return """<p>Логин</p>
-    <form action="/login" method="post">
-            <p>Логин: <input type="text" name="username"></p>
-            <p>Пароль: <input type="password" name="password"></p>
-            <p>
-                <input type="submit" name="action" value="Войти">
-            </p>
-        </form>
-        <p>Регистрация</p>
-        <form action="/register" method="post">
-            <p>Логин: <input type="text" name="invite"></p>
-            <p>Пароль: <input type="password" name="password"></p>
-            <p>
-                <input type="submit" name="action" value="Зарегистрироваться" formaction="/register">
-            </p>
-        </form>"""
+    if session.get('username', None):
+        pass
+    else:
+        return redirect("/login")
 
-@app.route('/login', methods=['POST'])
+@app.route("/login")
 def login():
+    return render_template("login.html")
+
+@app.route("/register")
+def register():
+    return render_template("register.html")
+
+@app.route('/api/login', methods=['POST'])
+def login_api():
     try:
         username = request.form.get('username')
         password = request.form.get('password')
@@ -130,8 +126,8 @@ def login():
         session.clear()
         return redirect('/')
 
-@app.route('/register', methods=['POST'])
-def register():
+@app.route('/api/register', methods=['POST'])
+def register_api():
     try:
         invite = request.form.get('invite')
         password = request.form.get('password')
